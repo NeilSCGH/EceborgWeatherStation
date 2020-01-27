@@ -1,0 +1,4 @@
+tester les capteurs
+tester l'api depuis postman
+tester l'api depuis arduino avec une requete bidon
+tester l'api depuis arduino avec les valeurs des capteurs
