@@ -1,4 +1,9 @@
-tester les capteurs
-tester l'api depuis postman
-tester l'api depuis arduino avec une requete bidon
-tester l'api depuis arduino avec les valeurs des capteurs
+c : recup val capteurs
+c : tester api php (postman)
+c : api + arduino (requete bidon)
+d : api + arduino + capteurs
+
+d : code pas fait
+c : code fait
+b : code en test
+a : code fonctionnel
