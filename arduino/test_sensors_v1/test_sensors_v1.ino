@@ -30,12 +30,12 @@ void loop()
   if (isnan(air_humidity) || isnan(temperature)) // Check if any reads failed and exit early (to try again).
   {
     Serial.println("Failed to read from DHT sensor!");
-    return;
+    //return;
   }
   
   soil_humidity = analogRead(SOIL_HUMIDITY_SENSOR_PIN);
-  //soil_humidity = 100 - (soil_humidity - wet_value)/(dry_value - wet_value)*100; //formula using calibrations variables of the sensor to have a percentage instead of a simple value 
-  soil_humidity = map(soil_hum, wet_value, dry_value, 100, 0);//plus propre il me semble, A COMPARER
+  soil_humidity = 100 - (soil_humidity - wet_value)/(dry_value - wet_value)*100; //formula using calibrations variables of the sensor to have a percentage instead of a simple value 
+  //soil_humidity = map(soil_humidity, wet_value, dry_value, 100, 0);//plus propre il me semble, A COMPARER
   
   heat_index = dht.computeHeatIndex(temperature, air_humidity, false);
   
@@ -43,4 +43,5 @@ void loop()
   Serial.println(soil_humidity);
   Serial.println(temperature);
   Serial.println(heat_index);
+  delay(1000);
 }

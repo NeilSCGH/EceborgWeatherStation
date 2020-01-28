@@ -8,8 +8,8 @@
 #endif
 
 //Credentials for the wifi connection
-const char* ssid     = "REPLACE_WITH_YOUR_SSID";
-const char* password = "REPLACE_WITH_YOUR_PASSWORD";
+const char* ssid     = "Bluetooth";
+const char* password = "blueblue2";
 
 // target url for the POST method
 const char* serverName = "http://example.com/post-esp-data.php";
@@ -39,22 +39,14 @@ void loop() {
     
     // Your Domain name with URL path or IP address with path
     http.begin(serverName);
-    
-    // Specify content-type header
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    // If you need an HTTP request with a content type: text/plain
-    //http.addHeader("Content-Type", "text/plain");
-    // If you need an HTTP request with a content type: application/json, use the following:
-    //http.addHeader("Content-Type", "application/json");
-    //int httpResponseCode = http.POST("{\"value1\":\"19\",\"value2\":\"67\",\"value3\":\"78\"}");
-    
-    // Prepare the HTTP POST request
+    http.addHeader("Content-Type", "text/plain");
     String httpRequestData = "api_key=" + apiKeyValue + "&value1=101" + "&value2=102" + "&value3=103";
-    Serial.print("httpRequestData: ");Serial.println(httpRequestData);
     
     // Send the request
     int httpResponseCode = http.POST(httpRequestData);
 
+    Serial.print("httpRequestData: ");
+    Serial.println(httpRequestData);
     if (httpResponseCode>0) {
       Serial.print("HTTP Response code: ");
       Serial.println(httpResponseCode);
