@@ -1,30 +1,31 @@
 #include "SoftwareSerial.h"
 String ssid ="Bluetooth";
-String password="blueblue2";
+String password="blueblue3";
 
 SoftwareSerial esp(15,14);// RX, TX
 
 String data;
 String server = "yourServer"; // www.example.com
 String uri = "yourURI";// our example is /esppost.php
-int DHpin = 8;//sensor pin
-byte dat [5];
-String temp ,hum;
 
 void setup() {
-  pinMode (DHpin, OUTPUT);
   esp.begin(115200);
   Serial.begin(115200);
   Serial.println("hey");
   reset();
   connectWifi();
-  
 }
 
 //reset the esp8266 module
 void reset() {
   esp.println("AT+RST");
   delay(1000);
+  
+  while (esp.available()){
+     String inData = esp.readStringUntil('\n');
+     Serial.println("Got reponse from ESP8266: " + inData);
+  }
+  Serial.println("Reset done");
 }
 
 //connect to the wifi network
@@ -32,25 +33,19 @@ void connectWifi() {
   String cmd = "AT+CWJAP=\"" +ssid+"\",\"" + password + "\"";
   esp.println(cmd);
   delay(4000);
+  Serial.println("Connection done");
 }
 
 void loop () {
-  
-  //start_test ();
-  // convert the bit data to string form
-  hum = "4";//String(dat[0]);
-  temp= "3";String(dat[2]);
-  data = "temperature=" + temp + "&humidity=" + hum;// data sent must be under this form //name1=value1&name2=value2.
-  
-  httppost();
+  data = "temperature=3&humidity=4";
+  Serial.println(data);
+  //httppost();
   delay(1000);
 }
 
 void httppost () {
   esp.println("AT+CIPSTART=\"TCP\",\"" + server + "\",80");//start a TCP connection.
-  if( esp.find("OK")) {
-    Serial.println("TCP connection ready");
-  } 
+  
   delay(1000);
   String postRequest =
     "POST " + uri + " HTTP/1.0\r\n" +
@@ -62,7 +57,7 @@ void httppost () {
     
   String sendCmd = "AT+CIPSEND=";//determine the number of caracters to be sent.
   esp.print(sendCmd);
-  esp.println(postRequest.length() );
+  esp.println(postRequest.length());
   delay(500);
   if(esp.find(">")) { 
     Serial.println("Sending.."); esp.print(postRequest);

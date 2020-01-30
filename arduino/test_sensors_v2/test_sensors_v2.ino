@@ -49,18 +49,20 @@ void setup()
   pinMode(REFERENCE_3V3, INPUT);
   pinMode(LIGHT, INPUT);
 
+  startPressureSensor();
+
+  lastSecond = millis();
+
+  Serial.println("Weather Shield online!");
+}
+
+void startPressureSensor(){
   //Configure the pressure sensor
   myPressure.begin(); // Get sensor online
   myPressure.setModeBarometer(); // Measure pressure in Pascals from 20 to 110 kPa
   myPressure.setOversampleRate(7); // Set Oversample to the recommended 128
   myPressure.enableEventFlags(); // Enable all three pressure and temp event flags
-
-  //Configure the humidity sensor
-  myHumidity.begin();
-
-  lastSecond = millis();
-
-  Serial.println("Weather Shield online!");
+  myHumidity.begin();//Configure the humidity sensor
 }
 
 void loop()
@@ -80,53 +82,47 @@ void loop()
       Serial.println("I2C communication to sensors is not working. Check solder connections.");
 
       //Try re-initializing the I2C comm and the sensors
-      myPressure.begin();
-      myPressure.setModeBarometer();
-      myPressure.setOversampleRate(7);
-      myPressure.enableEventFlags();
-      myHumidity.begin();
+      startPressureSensor();
     }
     else
     {
-      Serial.print("Humidity = ");
-      Serial.print(humidity);
-      Serial.print("%,");
-      float temp_h = myHumidity.getTempF();
-      Serial.print(" temp_h = ");
-      Serial.print(temp_h, 2);
-      Serial.print("F,");
+      float temp_h = myHumidity.getTempF();//Check Temperature Sensor
+      float pressure = myPressure.readPressure();//Check Pressure Sensor
+      float tempf = myPressure.readTempF();//Check tempf from pressure sensor
+      float light_lvl = get_light_level();//Check light sensor
 
-      //Check Pressure Sensor
-      float pressure = myPressure.readPressure();
-      Serial.print(" Pressure = ");
-      Serial.print(pressure);
-      Serial.print("Pa,");
-
-      //Check tempf from pressure sensor
-      float tempf = myPressure.readTempF();
-      Serial.print(" temp_p = ");
-      Serial.print(tempf, 2);
-      Serial.print("F,");
-
-      //Check light sensor
-      float light_lvl = get_light_level();
-      Serial.print(" light_lvl = ");
-      Serial.print(light_lvl);
-      Serial.print("V,");
-
-      //Check batt level
-      float batt_lvl = get_battery_level();
-      Serial.print(" VinPin = ");
-      Serial.print(batt_lvl);
-      Serial.print("V");
-
-      Serial.println();
+      printValues(humidity, temp_h, pressure, tempf, light_lvl);
     }
 
     digitalWrite(STAT_BLUE, LOW); //Turn off stat LED
   }
 
   delay(100);
+}
+
+void printValues(float humidity, float temp_h, float pressure, float tempf, float light_lvl){
+  Serial.print("Humidity = ");
+  Serial.print(humidity);
+  Serial.print("%,");
+  
+  Serial.print(" temp_h = ");
+  Serial.print(temp_h, 2);
+  Serial.print("F,");
+  
+  //Check Pressure Sensor
+  Serial.print(" Pressure = ");
+  Serial.print(pressure);
+  Serial.print("Pa,");
+  
+  //Check tempf from pressure sensor
+  Serial.print(" temp_p = ");
+  Serial.print(tempf, 2);
+  Serial.print("F,");
+  
+  //Check light sensor
+  Serial.print(" light_lvl = ");
+  Serial.print(light_lvl);
+  Serial.println("V");
 }
 
 //Returns the voltage of the light sensor based on the 3.3V rail
