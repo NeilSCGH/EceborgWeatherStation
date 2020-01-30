@@ -25,7 +25,7 @@ const byte BATT = A2;
 long lastSecond; //The millis counter to see when a second rolls by
 
 String data;
-String server = "192.168.???"; // www.example.com
+String server = "192.168.43.84"; // www.example.com
 String uri = "/esp.php";// our example is /esppost.php
 
 void setup() {
@@ -51,6 +51,7 @@ void setup() {
 
 void loop()
 {
+  Serial.println("");
   //Print readings every second
   if (millis() - lastSecond >= 1000)
   {
@@ -70,14 +71,17 @@ void loop()
     }
     else
     {
+      Serial.println("Sensors connected ok");
+      
+      Serial.println("Reading sensors ");      
       float temp_h = myHumidity.getTempF();//Check Temperature Sensor
       float pressure = myPressure.readPressure();//Check Pressure Sensor
-      float tempf = myPressure.readTempF();//Check tempf from pressure sensor
       float light_lvl = get_light_level();//Check light sensor
 
-      data = printValues(humidity, temp_h, pressure, tempf, light_lvl);
+      data = printValues(humidity, temp_h, pressure, light_lvl);
       
-      Serial.println(data);
+      //Serial.println(data);
+      Serial.println("Sending values via http post method");  
       httppost();
     }
 
@@ -96,7 +100,7 @@ void startPressureSensor(){
   myHumidity.begin();//Configure the humidity sensor
 }
 
-String printValues(float humidity, float temp_h, float pressure, float tempf, float light_lvl){
+String printValues(float humidity, float temp_h, float pressure, float light_lvl){
   Serial.print("Humidity = ");
   Serial.print(humidity);
   Serial.print("%,");
@@ -110,17 +114,12 @@ String printValues(float humidity, float temp_h, float pressure, float tempf, fl
   Serial.print(pressure);
   Serial.print("Pa,");
   
-  //Check tempf from pressure sensor
-  Serial.print(" temp_p = ");
-  Serial.print(tempf, 2);
-  Serial.print("F,");
-  
   //Check light sensor
   Serial.print(" light_lvl = ");
   Serial.print(light_lvl);
   Serial.println("V");
 
-  return ("hum=" + String(humidity) + "&temph=" + String(temp_h) + "&press=" + String(pressure) + "&tempf=" + String(tempf) + "&light=" + String(light_lvl));
+  return ("hum=" + String(humidity) + "&temph=" + String(temp_h) + "&press=" + String(pressure) + "&light=" + String(light_lvl));
 }
 
 //reset the esp8266 module
@@ -144,8 +143,6 @@ void connectWifi() {
 }
 
 void httppost () {
-  Serial.println("POST METHOD RUNNING");
-  
   esp.println("AT+CIPSTART=\"TCP\",\"" + server + "\",80");//start a TCP connection.
   Serial.println("AT+CIPSTART=\"TCP\",\"" + server + "\",80");
   
@@ -162,9 +159,9 @@ void httppost () {
   esp.print(sendCmd);
   esp.println(postRequest.length());
   delay(500);
-  if(esp.find(">")) { 
+  //if(esp.find(">")) { 
     Serial.println("Sending.."); esp.print(postRequest);
-    if( esp.find("SEND OK")) { 
+    //if( esp.find("SEND OK")) { 
       Serial.println("Packet sent");
       while (esp.available()) {
         String tmpResp = esp.readString();
@@ -172,8 +169,8 @@ void httppost () {
       }
       // close the connection
       esp.println("AT+CIPCLOSE");
-    }
-  }
+    //}
+  //}
 }
 
 //Returns the voltage of the light sensor based on the 3.3V rail
