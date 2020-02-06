@@ -1,6 +1,6 @@
 #include "SoftwareSerial.h"
 #include <Arduino.h>
-
+bool vw=true;
 
 //credentials
 String ssid ="Bluetooth";
@@ -16,9 +16,9 @@ void reset(SoftwareSerial esp) {
   
   while (esp.available()){
      String inData = esp.readStringUntil('\n');
-     Serial.println("Got reponse from ESP8266: " + inData);
+     if(vw) Serial.println("Got reponse from ESP8266: " + inData);
   }
-  Serial.println("ESP reset done");
+  if(vw) Serial.println("ESP reset done");
 }
 
 //connect to the wifi network
@@ -26,12 +26,12 @@ void connectWifi(SoftwareSerial esp) {
   String cmd = "AT+CWJAP=\"" +ssid+"\",\"" + password + "\"";
   esp.println(cmd);
   delay(4000);
-  Serial.println("ESP connection done");
+  if(vw) Serial.println("ESP connection done");
 }
 
 void httppost (SoftwareSerial esp, String data) {
   esp.println("AT+CIPSTART=\"TCP\",\"" + server + "\",80");//start a TCP connection.
-  Serial.println("AT+CIPSTART=\"TCP\",\"" + server + "\",80");
+  if(vw) Serial.println("AT+CIPSTART=\"TCP\",\"" + server + "\",80");
   
   delay(1000);
   String postRequest =
@@ -47,15 +47,15 @@ void httppost (SoftwareSerial esp, String data) {
   esp.println(postRequest.length());
   delay(500);
   //if(esp.find(">")) { 
-    Serial.println("Sending.."); esp.print(postRequest);
-    //if( esp.find("SEND OK")) { 
-      Serial.println("Packet sent");
-      while (esp.available()) {
-        String tmpResp = esp.readString();
-        Serial.println(tmpResp);
-      }
-      // close the connection
-      esp.println("AT+CIPCLOSE");
-    //}
+  if(vw) Serial.println("Sending.."); esp.print(postRequest);
+  //if( esp.find("SEND OK")) { 
+  if(vw) Serial.println("Packet sent");
+  while (esp.available()) {
+    String tmpResp = esp.readString();
+    Serial.println(tmpResp);
+  }
+  // close the connection
+  esp.println("AT+CIPCLOSE");
+  //}
   //}
 }

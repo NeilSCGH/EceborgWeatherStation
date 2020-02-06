@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "SparkFunMPL3115A2.h" //Pressure sensor - Search "SparkFun MPL3115" and install from Library Manager
 #include "SparkFun_Si7021_Breakout_Library.h" //Humidity sensor - Search "SparkFun Si7021" and install from Library Manager
+bool vs=true;
 
 #define WIND_DIR_AVG_SIZE 300
 
@@ -86,9 +87,7 @@ float get_wind_speed()
   return (windSpeed);
 }
 
-void readWindRain(int rainValue, int seconds_5m){
-  rainValue = analogRead(RainSensor);
-  
+void readWindRain(int seconds_5m){  
   //------  WIND AND RAIN  -----
   //Take a speed and direction reading every second for 2 minute average
   if (++seconds_5m > 5*60-1) seconds_5m = 0;
@@ -140,6 +139,7 @@ bool readSensors(){
     temp_h = myHumidity.getTempF();//Check Temperature Sensor
     pressure = myPressure.readPressure();//Check Pressure Sensor
     light_lvl = get_light_level();//Check light sensor
+    if(vs) Serial.println("Done");
     return true;
   }
 }
@@ -232,4 +232,55 @@ void calcWeather()
   rainin = 0;
   for (int i = 0 ; i < 60 ; i++)
     rainin += rainHour[i];
+}
+
+//--------------------------------------------  Printing  --------------------------------------------
+String getData(bool doPrint){  
+  int rainValue = analogRead(RainSensor);
+
+  if (doPrint){
+    Serial.print("Humidity = ");
+    Serial.print(humidity);
+    Serial.print("%,");
+    
+    Serial.print(" temp_h = ");
+    Serial.print(temp_h, 2);
+    Serial.print("F,");
+    
+    //Check Pressure Sensor
+    Serial.print(" Pressure = ");
+    Serial.print(pressure);
+    Serial.print("Pa,");
+    
+    //Check light sensor
+    Serial.print(" light_lvl = ");
+    Serial.print(light_lvl);
+    Serial.print("V,");
+    
+    Serial.print(" winddir = ");
+    Serial.print(winddir);
+    Serial.print(",");
+    
+    Serial.print(" windspeedmph = ");
+    Serial.print(windspeedmph, 2);
+    Serial.print(",");
+    
+    Serial.print(" windspdmph_avg5m = ");
+    Serial.print(windspdmph_avg5m, 2);
+    Serial.print(",");
+    
+    Serial.print(" winddir_avg5m = ");
+    Serial.print(winddir_avg5m);
+    Serial.print(",");
+    
+    Serial.print(" rainin = ");
+    Serial.print(rainin,2);
+    Serial.print(",");
+    
+    Serial.print(" rainValue = ");
+    Serial.print(rainValue);
+    Serial.println("");
+  }
+  
+  return ("hum=" + String(humidity) + "&temph=" + String(temp_h) + "&press=" + String(pressure) + "&light=" + String(light_lvl) + "&winddir=" + String(winddir) + "&windspeedmph=" + String(windspeedmph) + "&windspdmph_avg5m=" + String(windspdmph_avg5m) + "&winddir_avg5m=" + String(winddir_avg5m) + "&rainin=" + String(rainin) + "&rainValue=" + String(rainValue));
 }

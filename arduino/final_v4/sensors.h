@@ -1,4 +1,4 @@
-void readWindRain(int rainValue, int seconds_5m);
+void readWindRain(int seconds_5m);
 bool readSensors();
 void startPressureSensor();
 float get_light_level();
@@ -8,3 +8,4 @@ void wspeedIRQ();
 void calcWeather() ;
 float get_wind_speed();
 int get_wind_direction();
+String getData(bool doPrint);
