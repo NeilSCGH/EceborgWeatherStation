@@ -6,7 +6,7 @@ bool vw=true;
 String ssid ="Bluetooth";
 String password="blueblue4";
 
-String server = "192.168.43.84"; // www.example.com
+String server = "192.168.43.123"; // www.example.com
 String uri = "/esp.php";// our example is /esppost.php
 
 //reset the esp8266 module
@@ -43,17 +43,16 @@ void httppost (SoftwareSerial esp, String data) {
     "\r\n" + data;
     
   String sendCmd = "AT+CIPSEND=";//determine the number of caracters to be sent.
+  if(vw) Serial.println("Sending.."); 
   esp.print(sendCmd);
   esp.println(postRequest.length());
   delay(500);
-  //if(esp.find(">")) { 
-  if(vw) Serial.println("Sending.."); esp.print(postRequest);
-  //if( esp.find("SEND OK")) { 
+  esp.print(postRequest);
+  if(vw) Serial.print(sendCmd);
+  if(vw) Serial.println(postRequest.length());
+  if(vw) Serial.print(postRequest);
   if(vw) Serial.println("Packet sent");
-  while (esp.available()) {
-    String tmpResp = esp.readString();
-    Serial.println(tmpResp);
-  }
+  
   // close the connection
   esp.println("AT+CIPCLOSE");
   //}

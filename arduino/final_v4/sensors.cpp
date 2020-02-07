@@ -4,6 +4,8 @@
 #include "SparkFun_Si7021_Breakout_Library.h" //Humidity sensor - Search "SparkFun Si7021" and install from Library Manager
 bool vs=true;
 
+const String KEY="neil"; //////// KEY for the API
+
 #define WIND_DIR_AVG_SIZE 300
 
 const byte REFERENCE_3V3 = A3;
@@ -137,6 +139,7 @@ bool readSensors(){
   else
   {
     temp_h = myHumidity.getTempF();//Check Temperature Sensor
+    temp_h = (temp_h-32)*5/9;// from farenheit to celsius
     pressure = myPressure.readPressure();//Check Pressure Sensor
     light_lvl = get_light_level();//Check light sensor
     if(vs) Serial.println("Done");
@@ -245,7 +248,7 @@ String getData(bool doPrint){
     
     Serial.print(" temp_h = ");
     Serial.print(temp_h, 2);
-    Serial.print("F,");
+    Serial.print("C,");
     
     //Check Pressure Sensor
     Serial.print(" Pressure = ");
@@ -282,5 +285,5 @@ String getData(bool doPrint){
     Serial.println("");
   }
   
-  return ("hum=" + String(humidity) + "&temph=" + String(temp_h) + "&press=" + String(pressure) + "&light=" + String(light_lvl) + "&winddir=" + String(winddir) + "&windspeedmph=" + String(windspeedmph) + "&windspdmph_avg5m=" + String(windspdmph_avg5m) + "&winddir_avg5m=" + String(winddir_avg5m) + "&rainin=" + String(rainin) + "&rainValue=" + String(rainValue));
+return ("api_key=" + KEY + "&humidity=" + String(humidity) + "&temp_h=" + String(temp_h) + "&pressure=" + String(pressure) + "&light_lvl=" + String(light_lvl) + "&winddir=" + String(winddir) + "&windspeedmph=" + String(windspeedmph) + "&windspdmph_avg5m=" + String(windspdmph_avg5m) + "&winddir_avg5m=" + String(winddir_avg5m) + "&rainin=" + String(rainin) + "&rainValue=" + String(rainValue));
 }

@@ -16,10 +16,10 @@ String data;
 byte seconds; //When it hits 60, increase the current minute
 byte seconds_5m; //Keeps track of the "wind speed/dir avg" over last 2 minutes array of data
 long lastSecond; //The millis counter to see when a second rolls by
-int delai=3000;
+int delai=15000;
 
 //--------------------------------------------  ESP8266  --------------------------------------------
-SoftwareSerial esp(15,14);// RX, TX
+SoftwareSerial esp(18,19);// RX, TX
 
 //--------------------------------------------  SETUP  --------------------------------------------
 void setup() {
@@ -60,9 +60,9 @@ void setup() {
 //--------------------------------------------  LOOP  --------------------------------------------
 void loop()
 {
-  if(v) Serial.println("");
   if (millis() - lastSecond >= delai)//every 3 second
   {
+    if(v) Serial.println("");
     if(v) Serial.println("Routine started...");
     digitalWrite(STAT_BLUE, LOW); //Blink stat LED
     lastSecond += delai;
