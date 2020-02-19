@@ -11,13 +11,14 @@ You'll need a working web server to host the php file (in the API folder), an SQ
 ### Installing
 
 You'll have to change (in the arduino folder):
-* SSID and PASSWORD in the wifi.cpp file
-* server and uri in the same file
+* SSID, PASSWORD, server and uri in the wifi.cpp file
 * the key in the sensors.cpp file (have to match the key in the API/esp.php file)
+
+You can use the sql file in the API folder to create the database with the good fields, including the automatic date.
 
 ## Running the tests
 
-Make sure the 2 parts are working properly.
+Make sure the hardware and the sorfware parts are working properly.
 
 ### Test the hardware part
 
@@ -31,7 +32,8 @@ You can use the test.html file to simulate the post method made by the arduino. 
 
 * **Neil Segard** - [NeilSCGH](https://github.com/NeilSCGH)
 
-With the help of 
+
+With the help of:
 * **Nicolas Chollet**  - [NicolasChollet51](https://github.com/NicolasChollet51)
 * **ECEBORG**  - [ECEBORG](https://github.com/ECEBORG)
 
