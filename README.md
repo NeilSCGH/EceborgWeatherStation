@@ -18,7 +18,7 @@ You can use the sql file in the API folder to create the database with the good 
 
 ## Running the tests
 
-Make sure the hardware and the sorfware parts are working properly.
+Make sure the hardware and the software parts are working properly.
 
 ### Test the hardware part
 
